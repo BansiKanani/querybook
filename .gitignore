@@ -51,3 +51,6 @@ querybook/webapp/coverage/
 build
 
 requirements/local.txt
+helm/custom-values.yaml
+helm/kepo-red-default-tls.cert-manager.yaml
+helm/kepo-red-default-tls.teleport.yaml

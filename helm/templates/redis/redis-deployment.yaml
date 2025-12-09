@@ -33,6 +33,8 @@ spec:
             - redis-server
             - --appendonly
             - 'yes'
+            - --dir
+            - '/data'
           image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
           ports:
@@ -47,8 +49,15 @@ spec:
             timeoutSeconds: 10
           resources:
             {{- toYaml .Values.redis.resources | nindent 12 }}
+          volumeMounts:
+            - name: redis-persistent-storage
+              mountPath: /data
       hostname: {{ .Values.redis.name }}
       restartPolicy: Always
+      volumes:
+        - name: redis-persistent-storage
+          persistentVolumeClaim:
+            claimName: querybook-redis-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -61,4 +70,15 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: querybook-redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
 {{ end }}
