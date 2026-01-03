@@ -48,5 +48,5 @@ numpy>=1.22.2,<2.0.0 # not directly required, pinned by Snyk to avoid a vulnerab
 psycopg2==2.9.5
 
 # Query engine and meta
-google-cloud-secret-manager=2.26.0
-typing=3.10.0.0
+google-cloud-secret-manager==2.26.0
+typing==3.10.0.0
