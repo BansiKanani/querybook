@@ -49,3 +49,4 @@ psycopg2==2.9.5
 
 # Query engine and meta
 google-cloud-secret-manager=2.26.0
+typing=3.10.0.0
