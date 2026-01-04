@@ -60,6 +60,9 @@ spec:
             - name: {{ $key | quote}}
               value: {{ $value | quote }}
             {{- end }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "querybook.name" . }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

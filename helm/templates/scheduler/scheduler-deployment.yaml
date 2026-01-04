@@ -61,6 +61,9 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.scheduler.resources | nindent 12 }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "querybook.name" . }}
+      {{- end }}
       restartPolicy: Always
       {{- with .Values.nodeSelector }}
       nodeSelector:

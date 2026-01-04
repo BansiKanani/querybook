@@ -30,6 +30,7 @@ pyyaml==6.0
 sqlalchemy==1.4.39
 pymysql==1.0.2
 requests>=2.32.0,<3.0.0
+requests-oauthlib
 elasticsearch==7.13.4
 
 # Query meta
@@ -49,4 +50,6 @@ psycopg2==2.9.5
 
 # Query engine and meta
 google-cloud-secret-manager==2.26.0
-typing==3.10.0.0
+typing==3.7.4.3
+
+pygithub==2.4.0

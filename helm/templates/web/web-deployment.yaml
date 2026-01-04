@@ -64,6 +64,9 @@ spec:
             - containerPort: {{ .Values.web.service.containerPort }}
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "querybook.name" . }}
+      {{- end }}
       restartPolicy: Always
       {{- with .Values.nodeSelector }}
       nodeSelector:
