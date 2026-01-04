@@ -61,12 +61,14 @@ def patch_password_in_conn_str(conn_str: str) -> str:
 
 class GSMSqlAlchemyMetastoreLoader(SqlAlchemyMetastoreLoader):
     def __init__(self, metastore_dict):
-        # Patch the connection string if GSM is used
         print("yooo initing GSMSqlAlchemyMetastore Loader")
         print("metastore_dict", metastore_dict)
         patched_dict = dict(metastore_dict)
-        if 'connection_string' in patched_dict:
-            patched_dict['connection_string'] = patch_password_in_conn_str(patched_dict['connection_string'])
+        # Patch inside metastore_params
+        if 'metastore_params' in patched_dict and 'connection_string' in patched_dict['metastore_params']:
+            patched_dict['metastore_params'] = dict(patched_dict['metastore_params'])
+            patched_dict['metastore_params']['connection_string'] = patch_password_in_conn_str(
+                patched_dict['metastore_params']['connection_string']
+            )
         print("patched_dict", patched_dict)
         super().__init__(patched_dict)
-
