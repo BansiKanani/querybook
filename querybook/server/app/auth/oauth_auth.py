@@ -102,7 +102,8 @@ class OAuthLoginManager(object):
             client_id=self.oauth_config["client_id"],
             code=code,
             client_secret=self.oauth_config["client_secret"],
-            cert=certifi.where(),
+            # cert=certifi.where(),
+            verify=certifi.where(),
         )
         if resp is None:
             raise AuthenticationError("Null response, denying access.")
