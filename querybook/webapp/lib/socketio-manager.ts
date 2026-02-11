@@ -67,16 +67,26 @@ export default {
             });
 
             socket.on('connect_error', (error: Error) => {
-                sendErrorToastDebounced(
-                    'Connection Error: ' + error.toString()
-                );
+                // Print stack trace instead of error toast
+                if (error && error.stack) {
+                    // eslint-disable-next-line no-console
+                    console.error('Connection Error stack trace:', error.stack);
+                } else {
+                    // eslint-disable-next-line no-console
+                    console.error('Connection Error:', error);
+                }
                 openSocketManager.removeSocket(nameSpace);
             });
 
             socket.on('connect_timeout', (timeout) => {
-                sendErrorToastDebounced(
-                    'Connection Timeout: ' + String(timeout)
-                );
+                // Print stack trace if available, else print timeout
+                if (timeout && timeout.stack) {
+                    // eslint-disable-next-line no-console
+                    console.error('Connection Timeout stack trace:', timeout.stack);
+                } else {
+                    // eslint-disable-next-line no-console
+                    console.error('Connection Timeout:', timeout);
+                }
             });
 
             socket.on('disconnect', (reason: string) => {

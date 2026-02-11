@@ -16,11 +16,12 @@ import { runQuery, transformQuery } from 'components/QueryComposer/RunQuery';
 import { BoundQueryEditor } from 'components/QueryEditor/BoundQueryEditor';
 import { IQueryEditorHandles } from 'components/QueryEditor/QueryEditor';
 import { QueryPeerReviewModal } from 'components/QueryPeerReviewModal/QueryPeerReviewModal';
-import {
+import { 
     IQueryRunButtonHandles,
     QueryEngineSelector,
     QueryRunButton,
 } from 'components/QueryRunButton/QueryRunButton';
+import { useIsAdmin } from 'hooks/useIsAdmin';
 import { QuerySnippetInsertionModal } from 'components/QuerySnippetInsertionModal/QuerySnippetInsertionModal';
 import { TemplatedQueryView } from 'components/TemplateQueryView/TemplatedQueryView';
 import { TranspileQueryModal } from 'components/TranspileQueryModal/TranspileQueryModal';
@@ -855,6 +856,49 @@ class DataDocQueryCellComponent extends React.PureComponent<IProps, IState> {
 
         const aiAgentButtonRenderer = window?.CUSTOM_AI_AGENT_BUTTON?.renderer;
 
+        // Use hook in a wrapper function component
+        const QueryRunButtonWithAdmin = () => {
+            const isAdmin = useIsAdmin();
+            return (
+                <>
+                    <QueryRunButton
+                        ref={this.runButtonRef}
+                        queryEngineById={queryEngineById}
+                        queryEngines={queryEngines}
+                        // Only disable the execute button, not the engine selector
+                        disabledRunButton={!isAdmin}
+                        hasSelection={hasSelection}
+                        engineId={this.engineId}
+                        onRunClick={this.onRunButtonClick}
+                        onEngineIdSelect={this.handleMetaChange.bind(
+                            this,
+                            'engine'
+                        )}
+                        rowLimit={this.rowLimit}
+                        onRowLimitChange={
+                            this.hasRowLimit
+                                ? this.handleMetaRowLimitChange
+                                : null
+                        }
+                        hasSamplingTables={this.hasSamplingTables}
+                        sampleRate={this.sampleRate}
+                        onSampleRateChange={
+                            this.hasSamplingTables
+                                ? this.handleMetaSampleRateChange
+                                : null
+                        }
+                        onTableSamplingInfoClick={
+                            this.toggleShowTableSamplingInfoModal
+                        }
+                    />
+                    {!isAdmin && (
+                        <div style={{ color: 'var(--color-warning)', marginTop: 8 }}>
+                            Disabled
+                        </div>
+                    )}
+                </>
+            );
+        };
         return (
             <>
                 <div className="query-metadata">
@@ -866,35 +910,7 @@ class DataDocQueryCellComponent extends React.PureComponent<IProps, IState> {
                         {queryTitleDOM}
                     </AccentText>
                     <div className="query-controls flex-row">
-                        <QueryRunButton
-                            ref={this.runButtonRef}
-                            queryEngineById={queryEngineById}
-                            queryEngines={queryEngines}
-                            disabled={!isEditable}
-                            hasSelection={hasSelection}
-                            engineId={this.engineId}
-                            onRunClick={this.onRunButtonClick}
-                            onEngineIdSelect={this.handleMetaChange.bind(
-                                this,
-                                'engine'
-                            )}
-                            rowLimit={this.rowLimit}
-                            onRowLimitChange={
-                                this.hasRowLimit
-                                    ? this.handleMetaRowLimitChange
-                                    : null
-                            }
-                            hasSamplingTables={this.hasSamplingTables}
-                            sampleRate={this.sampleRate}
-                            onSampleRateChange={
-                                this.hasSamplingTables
-                                    ? this.handleMetaSampleRateChange
-                                    : null
-                            }
-                            onTableSamplingInfoClick={
-                                this.toggleShowTableSamplingInfoModal
-                            }
-                        />
+                        <QueryRunButtonWithAdmin />
                         {this.getAdditionalDropDownButtonDOM()}
                     </div>
                 </div>

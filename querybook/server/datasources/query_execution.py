@@ -130,10 +130,15 @@ def create_query_execution(
     Returns:
         dict: A dictionary representation of the created QueryExecution.
     """
+    from logic.admin_check import is_admin
     with DBSession() as session:
         verify_query_engine_permission(engine_id, session=session)
-
         uid = current_user.id
+        # Only allow direct execution if user is admin
+        if not is_admin(uid, session=session):
+            # Only allow non-admins if peer_review_params is provided (i.e., review required)
+            if not peer_review_params:
+                api_assert(False, "Only admins can execute queries directly. Non-admins must submit for review.")
         status = (
             QueryExecutionStatus.PENDING_REVIEW
             if peer_review_params

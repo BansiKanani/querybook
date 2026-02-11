@@ -37,7 +37,8 @@ const EXECUTE_QUERY_SHORTCUT = getShortcutSymbols(
 );
 
 interface IQueryRunButtonProps extends IQueryEngineSelectorProps {
-    disabled?: boolean;
+    disabled?: boolean; // disables all controls
+    disabledRunButton?: boolean; // disables only the run button
     hasSelection?: boolean;
     runButtonTooltipPos?: TooltipDirection;
 
@@ -62,6 +63,7 @@ export const QueryRunButton = React.forwardRef<
     (
         {
             disabled,
+            disabledRunButton,
             hasSelection,
             runButtonTooltipPos = 'up',
             onRunClick,
@@ -106,6 +108,7 @@ export const QueryRunButton = React.forwardRef<
                 data-balloon-length="fit"
                 data-balloon-pos={runButtonTooltipPos}
                 color={'accent'}
+                disabled={!!disabledRunButton}
             />
         );
 

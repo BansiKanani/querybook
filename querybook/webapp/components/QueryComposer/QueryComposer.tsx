@@ -22,6 +22,7 @@ import {
     IQueryRunButtonHandles,
     QueryRunButton,
 } from 'components/QueryRunButton/QueryRunButton';
+import { useIsAdmin } from 'hooks/useIsAdmin';
 import {
     ISearchAndReplaceHandles,
     ISearchAndReplaceProps,
@@ -801,6 +802,7 @@ const QueryComposer: React.FC = () => {
         </div>
     );
 
+    const isAdmin = useIsAdmin();
     const queryRunDOM = (
         <div>
             <QueryRunButton
@@ -820,7 +822,13 @@ const QueryComposer: React.FC = () => {
                 onTableSamplingInfoClick={() =>
                     setShowTableSamplingInfoModal(true)
                 }
+                disabledRunButton={!isAdmin}
             />
+            {!isAdmin && (
+                <div style={{ color: 'var(--color-warning)', marginTop: 8 }}>
+                    Disabled
+                </div>
+            )}
         </div>
     );
 
