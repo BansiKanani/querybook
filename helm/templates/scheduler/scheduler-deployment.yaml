@@ -35,32 +35,18 @@ spec:
           image: "{{ .Values.scheduler.image.repository }}:{{ .Values.scheduler.image.tag }}"
           imagePullPolicy: {{ .Values.scheduler.image.pullPolicy }}
           env:
-            - name: FLASK_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "querybook.secrets" . }}
-                  key: FLASK_SECRET_KEY
-            - name: DATABASE_CONN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "querybook.secrets" . }}
-                  key: DATABASE_CONN
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "querybook.secrets" . }}
-                  key: REDIS_URL
-            - name: ELASTICSEARCH_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "querybook.secrets" . }}
-                  key: ELASTICSEARCH_HOST
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key | quote}}
               value: {{ $value | quote }}
             {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.existingSecret }}
           resources:
             {{- toYaml .Values.scheduler.resources | nindent 12 }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "querybook.name" . }}
+      {{- end }}
       restartPolicy: Always
       {{- with .Values.nodeSelector }}
       nodeSelector:
